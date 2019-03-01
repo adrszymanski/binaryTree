@@ -42,6 +42,16 @@ class Node
      */
     private $isLeft;
 
+    /**
+     * @ORM\Column(type="integer", options={"default":0})
+     */
+    private $depth;
+
+    /**
+     * @ORM\Column(type="text", options={"default": "/"})
+     */
+    private $parents;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -103,6 +113,30 @@ class Node
     public function setIsLeft(bool $isLeft): self
     {
         $this->isLeft = $isLeft;
+
+        return $this;
+    }
+
+    public function getDepth(): ?int
+    {
+        return $this->depth;
+    }
+
+    public function setDepth(int $depth): self
+    {
+        $this->depth = $depth;
+
+        return $this;
+    }
+
+    public function getParents(): ?string
+    {
+        return $this->parents;
+    }
+
+    public function setParents(string $parents): self
+    {
+        $this->parents = $parents;
 
         return $this;
     }
