@@ -39,7 +39,7 @@ class TreeController extends AbstractController {
      * @param $childrenArray {array}
      * @param $rootFill {boolean}
      */
-    public function handleNode($node, &$childrenArray, $rootFill) {
+    private function handleNode($node, &$childrenArray, $rootFill) {
         $newNode['id'] = $node->getId();
         $newNode['name'] = $node->getName();
         $newNode['creditsLeft'] = $node->getCreditsLeft();
@@ -63,7 +63,7 @@ class TreeController extends AbstractController {
      * @param $index {int}
      * @param $parentsChildren {array}
      */
-    public function handleChild($isLeft, $parentId, $index, &$parentsChildren) {
+    private function handleChild($isLeft, $parentId, $index, &$parentsChildren) {
         $child = array_filter($this->items,
             function($element) use ($parentId, $isLeft) {
                 return
@@ -149,7 +149,7 @@ class TreeController extends AbstractController {
      * @param $entityManager
      * @param $num
      */
-    public function updateParentState($node, $entityManager, $num) {
+    private function updateParentState($node, $entityManager, $num) {
         $repository = $this->getDoctrine()
             ->getRepository(Node::class);
         $parent = $repository->find($node->getParentId());
