@@ -51,6 +51,8 @@ class TreeController extends AbstractController {
 
     /**
      * @Route("/numberOfNodes", name="get_number_of_nodes", methods={"GET"})
+     * @param Request $request
+     * @return JsonResponse
      */
     public function getNumberOfNodes(Request $request) {
         $row = $request->get('row', 0);
