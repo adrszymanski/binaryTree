@@ -9,7 +9,45 @@ window.onload = function () {
     getNodes(0, NUMBER_OF_START_ROWS, 0).then(response => {
       handleNodes(response.data, true);
       // Processing rest of the rows by 1000 nodes per request
-      proceessRows(numberOfRows);
+      processRows(numberOfRows);
+        /**
+         * Adding event on add button click and calling create API
+         */
+        const addButtons = document.querySelectorAll('.addNode');
+        addButtons.forEach(function(elem) {
+            elem.addEventListener('click', function (event) {
+                const newNodeName = prompt('Type name:');
+                if (newNodeName) {
+                    const parentId = parseInt(event.target.getAttribute('parent-id'));
+                    const isLeft = Boolean(parseInt(event.target.getAttribute('is-left')));
+                    const depth = parseInt(event.target.getAttribute('depth'));
+
+                    addNode(newNodeName, parentId, depth, isLeft).then(response => {
+                        location.reload();
+                    }, error => {
+                        console.error(error);
+                    });
+                } else {
+                    alert('Name is mandatory!');
+                }
+            });
+        });
+
+        /**
+         * Adding event to delete buttons and calling delete API.
+         */
+        const deleteButtons = document.querySelectorAll('.delete');
+        deleteButtons.forEach(function(elem) {
+            elem.addEventListener('click', function(event) {
+                const nodeId = event.target.getAttribute('node-id');
+
+                deleteNode(nodeId).then(response => {
+                    location.reload();
+                }, error => {
+                    console.error(error);
+                });
+            });
+        });
     });
   }, error => {
       console.error(error);
@@ -22,7 +60,7 @@ window.onload = function () {
  * @param numberOfRows
  * @returns {Promise<void>}
  */
-async function proceessRows(numberOfRows) {
+async function processRows(numberOfRows) {
   const rowsRange = createRange(NUMBER_OF_START_ROWS + 1, numberOfRows);
   for (const currentRow of rowsRange) {
       const numberOfNodes = await getNumberOfNodes(currentRow).data[0].numberOfNodes;
@@ -90,7 +128,6 @@ function handleNodes(nodes, firstNodes = false) {
  */
 function createNode(currentNode) {
   const newChildNode = document.createElement('li');
-
   const html = createNodeHTML(
     currentNode.id,
     currentNode.name,
@@ -105,6 +142,13 @@ function createNode(currentNode) {
     parent.appendChild(newChildNode);
   }
 
+  if (currentNode.creditsLeft === 0) {
+    createAddNode(currentNode, true);
+  }
+
+  if (currentNode.creditsRight === 0) {
+    createAddNode(currentNode, false);
+  }
 }
 
 /**
@@ -116,12 +160,45 @@ function createNode(currentNode) {
  * @param isLeafNode {boolean}
  * @returns {string}
  */
-function createNodeHTML(id, name, leftNumber, rightNumber, isLeafNode = false) {
+function createNodeHTML(id, name, leftNumber, rightNumber) {
+  let isLeafNode = false;
+  if(leftNumber === 0 && rightNumber === 0) {
+    isLeafNode = true;
+  }
+
   return `
-    <div>${leftNumber} | ${name} | ${rightNumber}</div>
-    ${isLeafNode ? '<button class="delete" node-id="' + id +  '">Delete</button>' : ''}
+    <div>
+      ${leftNumber} | ${name} | ${rightNumber}
+    </div>
+    ${isLeafNode ? 
+      '<button class="delete" node-id="' + id +  '">Delete</button>' 
+      : ''
+    }
     <ul id="list-${id}"></ul>
   `;
+}
+
+/**
+ * Creating node with add button.
+ * @param parent {object}
+ * @param isLeft {boolean}
+ */
+function createAddNode(parent, isLeft) {
+  const newChildNode = document.createElement('li');
+  const html = `
+    <div>
+      <button 
+        class="addNode" 
+        parent-id="${parent.id}" 
+        depth="${parent.depth + 1}" 
+        is-left="${isLeft ? 1 : 0}">
+        Add node
+      </button>
+    </div>
+  `;
+  newChildNode.innerHTML = html;
+  document.getElementById(`list-${parent.id}`).appendChild(newChildNode);
+
 }
 
 //// API CALLS ///
@@ -154,6 +231,38 @@ function getNumberOfRows() {
 function getNumberOfNodes(row) {
   return new Promise((resolve, reject) => {
     axios.get(`${API_URL}/numberOfNodes?row=${row}`)
+        .then(function (response) {
+          resolve(response);
+        })
+        .catch(function (error) {
+          reject(error);
+        });
+  });
+}
+
+function deleteNode(id) {
+  return new Promise((resolve, reject) => {
+    axios.delete(`${API_URL}/${id}`)
+        .then(function (response) {
+          resolve(response);
+        })
+        .catch(function (error) {
+          reject(error);
+        });
+  });
+}
+
+function addNode(name, parentId, depth, isLeft) {
+  return new Promise((resolve, reject) => {
+    const data = {
+        name,
+        parentId,
+        depth,
+        isLeft,
+        creditsLeft: 0,
+        creditsRight: 0
+    }
+    axios.post(`${API_URL}/add`, data)
         .then(function (response) {
           resolve(response);
         })

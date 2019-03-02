@@ -10,8 +10,8 @@ Steps:
 3. Migrate to DB: php bin/console doctrine:migrations:migrate
 4. SQL INSERT with some nodes:
 
-INSERT INTO `node` (`id`, `name`, `credits_left`, `credits_right`, `parent_id`, `is_left`, `depth`, `parents`) VALUES (1, 'Root', 3, 4, 0, 0, 0, '');
-INSERT INTO `node` (`id`, `name`, `credits_left`, `credits_right`, `parent_id`, `is_left`, `depth`, `parents`) VALUES (2, 'Left', 1, 1, 1, 1, 1, '1');
+INSERT INTO `node` (`id`, `name`, `credits_left`, `credits_right`, `parent_id`, `is_left`, `depth`, `parents`) VALUES (1, 'Root', 11, 4, 0, 0, 0, '');
+INSERT INTO `node` (`id`, `name`, `credits_left`, `credits_right`, `parent_id`, `is_left`, `depth`, `parents`) VALUES (2, 'Left', 7, 3, 1, 1, 1, '1');
 INSERT INTO `node` (`id`, `name`, `credits_left`, `credits_right`, `parent_id`, `is_left`, `depth`, `parents`) VALUES (19, 'Right', 1, 2, 1, 0, 1, '1');
 INSERT INTO `node` (`id`, `name`, `credits_left`, `credits_right`, `parent_id`, `is_left`, `depth`, `parents`) VALUES (4, 'Left Left', 3, 3, 2, 1, 2, '1/2');
 INSERT INTO `node` (`id`, `name`, `credits_left`, `credits_right`, `parent_id`, `is_left`, `depth`, `parents`) VALUES (18, 'Left Right', 1, 1, 2, 0, 2, '1/2');

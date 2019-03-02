@@ -1,3 +1,8 @@
+.tree {
+    position: absolute;
+    width: 30000px;
+}
+
 .tree ul {
     padding-top: 20px; position: relative;
 
