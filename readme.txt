@@ -31,8 +31,6 @@ INSERT INTO `node` (`id`, `name`, `credits_left`, `credits_right`, `parent_id`, 
 6. Open src/js/index.html in Browser
 7. To enable localhost cors please open Chrome's directory and use cmd/powershell to
   open chrome without CORS: chrome.exe --user-data-dir="C://Chrome dev session" --disable-web-security
-8. If you have any futher questions:
-    507 663 889 or adr.szymanski@gmail.com
 
 
 <-- Used dependencies from composer -->
